@@ -192,6 +192,7 @@
         </main>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script>
         let receiver_id = '';
         let my_id = '{{ Auth::id() }}';
@@ -202,6 +203,18 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
+            });
+
+            Pusher.logToConsole = true;
+
+            var pusher = new Pusher('8512450f3c78b78971dc', {
+                cluster: 'ap1'
+            });
+
+            var channel = pusher.subscribe('my-channel');
+
+            channel.bind('my-event', function(data) {
+                alert(JSON.stringify(data));
             });
 
             $('.user').click(function(){
@@ -227,8 +240,6 @@
                     $(this).val('');
 
                     let datastr = 'receiver_id=' + receiver_id + '&message=' + message;
-
-                    console.log(datastr);
 
                     $.ajax({
                         type: 'POST',

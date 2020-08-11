@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Message as EventsMessage;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use App\Message;
+use Illuminate\Broadcasting\Broadcasters\PusherBroadcaster;
 
 class HomeController extends Controller
 {
@@ -52,6 +54,10 @@ class HomeController extends Controller
         $data->message = $message;
         $data->is_read = 0;
         $data->save();
+
+        $data = ['from' => $from, 'to' => $to];
+
+        event(new EventsMessage($data));
 
     }
 }
