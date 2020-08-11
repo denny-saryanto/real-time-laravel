@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use App\Message;
 
 class HomeController extends Controller
 {
@@ -27,5 +28,30 @@ class HomeController extends Controller
     {
         $users = User::where('id', '!=', Auth::id())->get();
         return view('home', ['users' => $users]);
+    }
+
+    public function getMessage($id){
+        $my_id = Auth::id();
+        $messages = Message::where(function($query) use ($id, $my_id){
+            $query->where('from', $my_id)->where('to', $id);
+        })->orWhere(function($query) use ($id, $my_id){
+            $query->where('from', $id)->where('to', $my_id);
+        })->get();
+
+        return view('messages.index', ['messages' => $messages]);
+    }
+
+    public function sendMessage(Request $request){
+        $from = Auth::id();
+        $to = $request->receiver_id;
+        $message = $request->message;
+
+        $data = new Message();
+        $data->from = $from;
+        $data->to = $to;
+        $data->message = $message;
+        $data->is_read = 0;
+        $data->save();
+
     }
 }

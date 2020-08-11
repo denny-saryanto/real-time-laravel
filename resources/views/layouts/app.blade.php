@@ -197,14 +197,55 @@
         let my_id = '{{ Auth::id() }}';
 
         $(document).ready(function(){
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
             $('.user').click(function(){
 	            $('.user').removeClass('active');
 	            $(this).addClass('active');
 
                 receiver_id = $(this).attr('id');
                 $.ajax({
-                    
+                    type: "GET",
+                    url: "message/" + receiver_id,
+                    data: "",
+                    cache: false,
+                    success: function(data){
+                        $('#messages').html(data);
+                    }
                 });
+            });
+
+            $(document).on('keyup', '.input-text input', function(e){
+                let message = $(this).val();
+
+                if (e.keyCode == 13 && message != '' && receiver_id != ''){
+                    $(this).val('');
+
+                    let datastr = 'receiver_id=' + receiver_id + '&message=' + message;
+
+                    console.log(datastr);
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/message',
+                        data: datastr,
+                        cache: false,
+                        success: function(data){
+
+                        },
+                        error: function(jqXHR, status, err){
+                            alert(err);
+                        },
+                        complete: function(){
+
+                        }
+                    })
+                }
             });
         });
     </script>
