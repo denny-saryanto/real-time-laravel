@@ -8,6 +8,7 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use App\Message;
 use Illuminate\Broadcasting\Broadcasters\PusherBroadcaster;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -28,7 +29,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $users = User::where('id', '!=', Auth::id())->get();
+        //Select All User Except User Logged in
+        //$users = User::where('id', '!=', Auth::id())->get();
+
+        //Count How Many Message Are Unread From The Selected User
+        $users = DB::select("select users.id, users.name, users.avatar, users.email, count(is_read) as unread 
+        from users LEFT  JOIN  messages ON users.id = messages.from and is_read = 0 and messages.to = " . Auth::id() . "
+        where users.id != " . Auth::id() . " 
+        group by users.id, users.name, users.avatar, users.email");
         return view('home', ['users' => $users]);
     }
 
