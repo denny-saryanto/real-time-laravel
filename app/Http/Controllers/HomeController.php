@@ -42,6 +42,9 @@ class HomeController extends Controller
 
     public function getMessage($id){
         $my_id = Auth::id();
+
+        Message::where(['from' => $id, 'to' => $my_id])->update(['is_read' => 1]);
+
         $messages = Message::where(function($query) use ($id, $my_id){
             $query->where('from', $my_id)->where('to', $id);
         })->orWhere(function($query) use ($id, $my_id){

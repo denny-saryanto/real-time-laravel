@@ -216,7 +216,7 @@
             channel.bind('my-event', function(data) {
                 //alert(JSON.stringify(data.data.from));
                 if(my_id == data.data.from){
-                    alert('Sender');
+                    $('#' + data.data.to).click();
                 } else if (my_id == data.data.to){
                     if(receiver_id == data.data.from){
                         $('#' + data.data.from).click();
@@ -235,6 +235,7 @@
             $('.user').click(function(){
 	            $('.user').removeClass('active');
 	            $(this).addClass('active');
+                $(this).find('.pending').remove();
 
                 receiver_id = $(this).attr('id');
                 $.ajax({
@@ -244,6 +245,7 @@
                     cache: false,
                     success: function(data){
                         $('#messages').html(data);
+                        scrollToBottomFunc();
                     }
                 });
             });
@@ -274,6 +276,12 @@
                 }
             });
         });
+
+        function scrollToBottomFunc() {
+            $('.message-wrapper').animate({
+                scrollTop: $('.message-wrapper').get(0).scrollHeight
+            }, 50);
+        }
     </script>
 </body>
 </html>
