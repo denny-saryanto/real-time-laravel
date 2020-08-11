@@ -205,7 +205,7 @@
                 }
             });
 
-            Pusher.logToConsole = true;
+            Pusher.logToConsole = false;
 
             var pusher = new Pusher('8512450f3c78b78971dc', {
                 cluster: 'ap1'
