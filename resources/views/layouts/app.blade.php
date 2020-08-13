@@ -217,15 +217,17 @@
                 //alert(JSON.stringify(data.data.from));
                 if(my_id == data.data.from){
                     $('#' + data.data.to).click();
-                } else if (my_id == data.data.to){
+                } else if (my_id == data.data.to){   
                     if(receiver_id == data.data.from){
                         $('#' + data.data.from).click();
                     } else {
                         let pending = parseInt($('#' + data.data.from).find('.pending').html());
-
-                        if(pending){
-                            $('#' + data.data.from).find('.pending').html(pending + 1);
+                        let total = pending + 1;
+                        if(pending){ 
+                            alert('You have ' + total + ' new message from ' + data.data.name[0].name);    
+                            $('#' + data.data.from).find('.pending').html(total);
                         } else {
+                            alert('You have 1 new message from ' + data.data.name[0].name);
                             $('#' + data.data.from).append('<span class="pending">1</span>');
                         }
                     }

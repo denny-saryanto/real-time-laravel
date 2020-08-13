@@ -59,6 +59,8 @@ class HomeController extends Controller
         $to = $request->receiver_id;
         $message = $request->message;
 
+        $getName = DB::select("select name from users where id = ". $from ."");
+
         $data = new Message();
         $data->from = $from;
         $data->to = $to;
@@ -66,7 +68,7 @@ class HomeController extends Controller
         $data->is_read = 0;
         $data->save();
 
-        $data = ['from' => $from, 'to' => $to];
+        $data = ['from' => $from, 'to' => $to, 'name' => $getName];
 
         event(new EventsMessage($data));
 
